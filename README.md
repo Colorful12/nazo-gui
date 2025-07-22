@@ -21,7 +21,7 @@ Vibe coding研修で作成したギミック満載の謎解き(?)Webアプリケ
 - **Graphics**: HTML5 Canvas
 - **Font**: Share Tech Mono (Google Fonts)
 
-## 🎯 実装のポイント
+## 実装のポイント
 
 ### Canvas活用
 - ノイズエフェクトによる背景演出
