@@ -89,7 +89,14 @@ const Stage0 = ({ onStageComplete }: StageProps) => {
                 className="absolute inset-0 z-10"
             />
 
-            {/* Fake buttons are now drawn on canvas */}
+            {/* Instruction text above fake buttons */}
+            {showFakeButtons && (
+                <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                    <div className="text-white font-mono text-center whitespace-nowrap" style={{ fontSize: '24px' }}>
+                        You need to start the system
+                    </div>
+                </div>
+            )}
 
             {/* Real hidden START button */}
             {realButtonVisible && (
