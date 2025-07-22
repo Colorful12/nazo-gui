@@ -3,8 +3,10 @@ import { StageProps } from '../../types';
 
 const Stage2: React.FC<StageProps> = ({ onStageComplete }) => {
     const [answer, setAnswer] = useState('');
-    const [isBlinking, setIsBlinking] = useState(false);
+    const [isBlinking, setIsBlinking] = useState<'dot' | 'dash' | false>(false);
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
+    const [morsePhase, setMorsePhase] = useState<'waiting' | 'transmitting'>('waiting');
+    const [blinkCount, setBlinkCount] = useState(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     // Background words with one mistyped word
@@ -20,13 +22,81 @@ const Stage2: React.FC<StageProps> = ({ onStageComplete }) => {
 
         // Simple repeating blink pattern
         const blinkInterval = setInterval(() => {
-            setIsBlinking(true);
-            setTimeout(() => setIsBlinking(false), 300); // On for 300ms
-        }, 1000); // Repeat every 1000ms
+            setBlinkCount(prev => prev + 1);
+        }, 100); // Check every 100ms for more precise timing
+
+        // Morse code pattern for "PROCESS": .--. .-.  ---  -.-.  .  ...  ...
+        const morsePattern = [
+            // P: .--.
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 100 },
+            { type: 'dash', duration: 600 }, { type: 'gap', duration: 100 },
+            { type: 'dash', duration: 600 }, { type: 'gap', duration: 100 },
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 400 }, // letter gap
+            // R: .-.
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 100 },
+            { type: 'dash', duration: 600 }, { type: 'gap', duration: 100 },
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 400 }, // letter gap
+            // O: ---
+            { type: 'dash', duration: 600 }, { type: 'gap', duration: 100 },
+            { type: 'dash', duration: 600 }, { type: 'gap', duration: 100 },
+            { type: 'dash', duration: 600 }, { type: 'gap', duration: 400 }, // letter gap
+            // C: -.-.
+            { type: 'dash', duration: 600 }, { type: 'gap', duration: 100 },
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 100 },
+            { type: 'dash', duration: 600 }, { type: 'gap', duration: 100 },
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 400 }, // letter gap
+            // E: .
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 400 }, // letter gap
+            // S: ...
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 100 },
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 100 },
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 400 }, // letter gap
+            // S: ...
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 100 },
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 100 },
+            { type: 'dot', duration: 200 }, { type: 'gap', duration: 800 }, // word gap
+        ];
+
+        let patternIndex = 0;
+        let isTransmitting = false;
+
+        const morseInterval = setInterval(() => {
+            if (!isTransmitting) {
+                // Start new transmission every 5 seconds
+                if (blinkCount % 50 === 0) {
+                    isTransmitting = true;
+                    patternIndex = 0;
+                    setMorsePhase('transmitting');
+                    console.log('Starting morse transmission!');
+                }
+            } else {
+                // Follow morse pattern
+                if (patternIndex < morsePattern.length) {
+                    const signal = morsePattern[patternIndex];
+
+                    if (signal.type === 'dot' || signal.type === 'dash') {
+                        setIsBlinking(signal.type); // 'dot' or 'dash'
+                    } else {
+                        setIsBlinking(false); // gap
+                    }
+
+                    setTimeout(() => {
+                        patternIndex++;
+                        if (patternIndex >= morsePattern.length) {
+                            isTransmitting = false;
+                            setMorsePhase('waiting');
+                            setIsBlinking(false);
+                            console.log('Morse transmission ended');
+                        }
+                    }, signal.duration);
+                }
+            }
+        }, 100);
 
         return () => {
             clearInterval(wordInterval);
             clearInterval(blinkInterval);
+            clearInterval(morseInterval);
         };
     }, []);
 
@@ -53,10 +123,16 @@ const Stage2: React.FC<StageProps> = ({ onStageComplete }) => {
             </div>
 
             {/* Blinking indicator */}
-            <div className="absolute top-10 right-10 z-50">
-                <div className={`w-20 h-20 rounded-full transition-all duration-300 border-4 ${isBlinking ? 'bg-red-500 shadow-red-500 shadow-2xl scale-125 opacity-100 border-white' : 'bg-red-800 scale-100 opacity-90 border-red-600'
-                    }`}></div>
-            </div>
+            {morsePhase === 'transmitting' && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" style={{ marginTop: '-100px' }}>
+                    <div className={`w-20 h-20 rounded-full transition-all duration-100 border-4 ${isBlinking === 'dot'
+                        ? 'bg-white shadow-white shadow-xl scale-125 opacity-100 border-gray-300'
+                        : isBlinking === 'dash'
+                            ? 'bg-white shadow-white shadow-2xl scale-175 opacity-100 border-gray-300'
+                            : 'bg-white scale-100 opacity-70 border-gray-400'
+                        }`}></div>
+                </div>
+            )}
 
             {/* Main interface */}
             <div className="flex items-center justify-center h-full">
