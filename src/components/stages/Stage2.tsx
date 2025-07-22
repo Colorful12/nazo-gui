@@ -19,25 +19,14 @@ const Stage2: React.FC<StageProps> = ({ onStageComplete }) => {
         };
 
         repeatText();
-        const interval = setInterval(repeatText, 5000);
+        const interval = setInterval(repeatText, 1); // Much faster refresh
 
         // Morse code blinking (P-R-O-C-E-S-S)
-        const morsePattern = [
-            250, 150, 250, 150, 500, 150, // P: .--. 
-            250, 150, 500, 150, 250, 150, // R: .-.
-            500, 150, 500, 150, 500, 150, // O: ---
-            500, 150, 250, 150, 500, 150, 250, 150, // C: -.-.
-            250, 150, // E: .
-            250, 150, 250, 150, 250, 150, // S: ...
-            250, 150, 250, 150, 250, 150, // S: ...
-        ];
-
-        let patternIndex = 0;
+        // Simple repeating blink pattern
         const blinkInterval = setInterval(() => {
             setIsBlinking(true);
-            setTimeout(() => setIsBlinking(false), morsePattern[patternIndex] || 250);
-            patternIndex = (patternIndex + 1) % morsePattern.length;
-        }, 800);
+            setTimeout(() => setIsBlinking(false), 300); // On for 300ms
+        }, 1000); // Repeat every 1000ms
 
         return () => {
             clearInterval(interval);
@@ -59,34 +48,17 @@ const Stage2: React.FC<StageProps> = ({ onStageComplete }) => {
         <div className="h-screen bg-black text-white overflow-hidden relative">
             {/* Background scrolling text */}
             <div className="absolute top-1/3 left-0 right-0 opacity-20 overflow-hidden">
-                <div className="whitespace-nowrap animate-pulse font-mono text-xs leading-relaxed text-center">
+                <div className="whitespace-nowrap font-mono text-xs leading-relaxed text-center animate-bounce">
                     {backgroundText}
                 </div>
             </div>
 
-            {/* Signal monitor */}
-            <div className="absolute top-10 left-10 w-64 h-32 border border-green-400 bg-black bg-opacity-80">
-                <div className="p-2">
-                    <div className="text-green-400 text-xs mb-2">SIGNAL MONITOR</div>
-                    <div className="h-16 flex items-center justify-center">
-                        <svg width="200" height="60" className="opacity-70">
-                            <polyline
-                                points="0,30 20,25 40,35 60,20 80,40 100,30 120,15 140,45 160,30 180,25 200,30"
-                                fill="none"
-                                stroke="#00ff00"
-                                strokeWidth="2"
-                                className="animate-pulse"
-                            />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
             {/* Blinking indicator */}
-            <div className="absolute top-20 right-20 text-center">
-                <div className={`w-12 h-12 rounded-full transition-all duration-100 mx-auto border-2 ${isBlinking ? 'bg-red-500 shadow-red-500 shadow-2xl border-red-300' : 'bg-red-800 border-red-600'
+            <div className="absolute top-10 right-10 text-center p-6 bg-red-900 bg-opacity-80 border-2 border-red-400 rounded-lg animate-pulse">
+                <div className={`w-20 h-20 rounded-full transition-all duration-300 mx-auto border-4 ${isBlinking ? 'bg-red-300 shadow-red-300 shadow-2xl border-white scale-110' : 'bg-red-800 border-red-500'
                     }`}></div>
-                <div className="text-sm text-red-400 mt-3 font-mono">ACTIVE</div>
+                <div className="text-xl text-red-200 mt-4 font-mono font-bold animate-pulse">⚠️ SIGNAL ⚠️</div>
+                <div className="text-sm text-red-300 mt-2 font-bold">BLINKING HERE</div>
             </div>
 
             {/* Main interface */}
