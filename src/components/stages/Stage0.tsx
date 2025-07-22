@@ -41,18 +41,29 @@ const Stage0 = ({ onStageComplete }: StageProps) => {
                 ctx.fillRect(x, y, size, size)
             }
 
-            // Draw fake UI elements
+            // Draw fake UI elements (centered)
             if (showFakeButtons) {
+                const rectWidth = 200
+                const rectHeight = 50
+                const spacing = 50
+
+                const startX = (canvas.width - rectWidth) / 2
+                const startY = canvas.height / 2 - rectHeight - spacing / 2
+
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'
-                ctx.fillRect(100, 100, 200, 50)
-                ctx.fillRect(100, 200, 200, 50)
-                ctx.fillRect(100, 300, 200, 50)
+                for (let i = 0; i < 3; i++) {
+                    ctx.fillRect(startX, startY + i * (rectHeight + spacing), rectWidth, rectHeight)
+                }
 
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'
                 ctx.font = '16px monospace'
-                ctx.fillText('LOADING...', 150, 130)
-                ctx.fillText('INITIALIZING...', 150, 230)
-                ctx.fillText('PROCESSING...', 150, 330)
+                ctx.textAlign = 'center'
+                ctx.textBaseline = 'middle'
+
+                const centerX = canvas.width / 2
+                ctx.fillText('LOADING...', centerX, startY + rectHeight / 2)
+                ctx.fillText('INITIALIZING...', centerX, startY + (rectHeight + spacing) + rectHeight / 2)
+                ctx.fillText('PROCESSING...', centerX, startY + 2 * (rectHeight + spacing) + rectHeight / 2)
             }
 
             animationRef.current = requestAnimationFrame(animate)
@@ -78,20 +89,7 @@ const Stage0 = ({ onStageComplete }: StageProps) => {
                 className="absolute inset-0 z-10"
             />
 
-            {/* Fake buttons */}
-            {showFakeButtons && (
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center space-y-4">
-                    <button className="px-8 py-3 bg-gray-800 text-white border border-gray-600 opacity-50 cursor-not-allowed">
-                        START
-                    </button>
-                    <button className="px-8 py-3 bg-gray-800 text-white border border-gray-600 opacity-50 cursor-not-allowed">
-                        OPTIONS
-                    </button>
-                    <button className="px-8 py-3 bg-gray-800 text-white border border-gray-600 opacity-50 cursor-not-allowed">
-                        EXIT
-                    </button>
-                </div>
-            )}
+            {/* Fake buttons are now drawn on canvas */}
 
             {/* Real hidden START button */}
             {realButtonVisible && (
@@ -110,10 +108,6 @@ const Stage0 = ({ onStageComplete }: StageProps) => {
                 </button>
             )}
 
-            {/* Hint text */}
-            <div className="absolute bottom-10 left-10 z-30 text-green-400 text-sm font-mono opacity-30">
-                ヒント: 本物のSTARTボタンを見つけてください...
-            </div>
         </div>
     )
 }
