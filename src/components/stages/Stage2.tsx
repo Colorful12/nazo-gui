@@ -9,6 +9,11 @@ const Stage2: React.FC<StageProps> = ({ onStageComplete }) => {
     const [blinkCount, setBlinkCount] = useState(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
+    type MorseSignal = {
+        type: 'dot' | 'dash' | 'gap';
+        duration: number;
+    };
+
     // Background words with one mistyped word
     const words = ['system', 'process', 'access', 'network', 'secure', 'protocol', 'proccess', 'status', 'monitor', 'control'];
     const correctAnswer = 'process'; // The correct spelling of 'proccess'
@@ -26,7 +31,7 @@ const Stage2: React.FC<StageProps> = ({ onStageComplete }) => {
         }, 100); // Check every 100ms for more precise timing
 
         // Morse code pattern for "PROCESS": .--. .-.  ---  -.-.  .  ...  ...
-        const morsePattern = [
+        const morsePattern: MorseSignal[] = [
             // P: .--.
             { type: 'dot', duration: 200 }, { type: 'gap', duration: 100 },
             { type: 'dash', duration: 600 }, { type: 'gap', duration: 100 },
