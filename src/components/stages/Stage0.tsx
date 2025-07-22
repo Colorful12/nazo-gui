@@ -17,6 +17,14 @@ const Stage0 = ({ onStageComplete }: StageProps) => {
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
 
+        // Handle window resize
+        const handleResize = () => {
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
+        }
+
+        window.addEventListener('resize', handleResize)
+
         // Initial loading animation
         setTimeout(() => {
             setShowFakeButtons(true)
@@ -75,6 +83,7 @@ const Stage0 = ({ onStageComplete }: StageProps) => {
             if (animationRef.current) {
                 cancelAnimationFrame(animationRef.current)
             }
+            window.removeEventListener('resize', handleResize)
         }
     }, [showFakeButtons])
 
