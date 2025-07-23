@@ -2,21 +2,21 @@ import React, { useState, useRef, useEffect } from 'react';
 import { StageProps } from '../../types';
 
 const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
-    // ダミー画面の状態
-    const [dummyUsername, setDummyUsername] = useState('');
-    const [dummyPassword, setDummyPassword] = useState('');
-    const [dummyLoginAttempt, setDummyLoginAttempt] = useState(false);
+    // メインシステムの状態
+    const [primaryUsername, setPrimaryUsername] = useState('');
+    const [primaryPassword, setPrimaryPassword] = useState('');
+    const [primaryLoginAttempt, setPrimaryLoginAttempt] = useState(false);
     
-    // 本物画面の状態
-    const [realUsername, setRealUsername] = useState('');
-    const [realPassword, setRealPassword] = useState('');
+    // バックアップシステムの状態
+    const [backupUsername, setBackupUsername] = useState('');
+    const [backupPassword, setBackupPassword] = useState('');
     
     // ドラッグ関連の状態
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     
-    const dummyLayerRef = useRef<HTMLDivElement>(null);
+    const primaryLayerRef = useRef<HTMLDivElement>(null);
 
     const handleMouseDown = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -43,25 +43,25 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
         setIsDragging(false);
     };
 
-    const handleDummyLogin = () => {
-        setDummyLoginAttempt(true);
+    const handlePrimaryLogin = () => {
+        setPrimaryLoginAttempt(true);
         setTimeout(() => {
-            setDummyLoginAttempt(false);
+            setPrimaryLoginAttempt(false);
         }, 2000);
     };
 
-    const handleRealLogin = () => {
-        if (realUsername === 'admin' && realPassword === 'secret') {
+    const handleBackupLogin = () => {
+        if (backupUsername === 'admin' && backupPassword === 'secret') {
             onStageComplete();
         }
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent, isReal: boolean) => {
+    const handleKeyPress = (e: React.KeyboardEvent, isBackup: boolean) => {
         if (e.key === 'Enter') {
-            if (isReal) {
-                handleRealLogin();
+            if (isBackup) {
+                handleBackupLogin();
             } else {
-                handleDummyLogin();
+                handlePrimaryLogin();
             }
         }
     };
@@ -72,12 +72,12 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
         >
-            {/* 背景 - 本物のログイン画面 */}
+            {/* プライマリ認証システム */}
             <div className="absolute top-0 left-0 w-full h-full bg-black flex items-center justify-center">
                 <div className="bg-blue-800/30 backdrop-blur-sm p-8 rounded-lg border border-blue-400/30 shadow-2xl">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-mono mb-2 text-blue-300">REAL LOGIN</h1>
-                        <p className="text-blue-400 text-sm">True Authentication System</p>
+                        <h1 className="text-3xl font-mono mb-2 text-blue-300">BACKUP LOGIN</h1>
+                        <p className="text-blue-400 text-sm">Secondary Authentication System</p>
                     </div>
 
                     <div className="space-y-6 w-80">
@@ -87,8 +87,8 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                             </label>
                             <input
                                 type="text"
-                                value={realUsername}
-                                onChange={(e) => setRealUsername(e.target.value)}
+                                value={backupUsername}
+                                onChange={(e) => setBackupUsername(e.target.value)}
                                 onKeyPress={(e) => handleKeyPress(e, true)}
                                 className="w-full p-3 bg-blue-900/50 border border-blue-500 rounded font-mono text-white focus:outline-none focus:border-blue-300 transition-colors"
                                 placeholder="admin"
@@ -101,8 +101,8 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                             </label>
                             <input
                                 type="password"
-                                value={realPassword}
-                                onChange={(e) => setRealPassword(e.target.value)}
+                                value={backupPassword}
+                                onChange={(e) => setBackupPassword(e.target.value)}
                                 onKeyPress={(e) => handleKeyPress(e, true)}
                                 className="w-full p-3 bg-blue-900/50 border border-blue-500 rounded font-mono text-white focus:outline-none focus:border-blue-300 transition-colors"
                                 placeholder="secret"
@@ -110,7 +110,7 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                         </div>
 
                         <button
-                            onClick={handleRealLogin}
+                            onClick={handleBackupLogin}
                             className="w-full p-3 bg-blue-600 hover:bg-blue-500 rounded font-mono transition-colors duration-300"
                         >
                             AUTHENTICATE
@@ -123,9 +123,9 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                 </div>
             </div>
 
-            {/* 表層 - 画面全体サイズの長方形（ドラッグ可能） */}
+            {/* セキュリティレイヤー */}
             <div
-                ref={dummyLayerRef}
+                ref={primaryLayerRef}
                 className="absolute select-none"
                 style={{
                     transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
@@ -137,10 +137,10 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                     backgroundColor: '#000000'
                 }}
             >
-                {/* 中央に配置された偽ログイン画面 */}
+                {/* メイン認証インターフェース */}
                 <div className="h-full w-full flex items-center justify-center">
                     <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-lg border border-gray-600/50 shadow-2xl relative">
-                        {/* ドラッグハンドル - 左上のエリア（完全に隠しバージョン） */}
+                        {/* システム設定パネル */}
                         <div 
                             className="absolute top-2 left-2 w-12 h-12 cursor-default bg-gray-800 hover:bg-gray-700 transition-colors rounded"
                             onMouseDown={handleMouseDown}
@@ -162,8 +162,8 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                                 </label>
                                 <input
                                     type="text"
-                                    value={dummyUsername}
-                                    onChange={(e) => setDummyUsername(e.target.value)}
+                                    value={primaryUsername}
+                                    onChange={(e) => setPrimaryUsername(e.target.value)}
                                     onKeyPress={(e) => handleKeyPress(e, false)}
                                     className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded font-mono text-white focus:outline-none focus:border-red-400 transition-colors"
                                     placeholder="Enter username"
@@ -176,8 +176,8 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                                 </label>
                                 <input
                                     type="password"
-                                    value={dummyPassword}
-                                    onChange={(e) => setDummyPassword(e.target.value)}
+                                    value={primaryPassword}
+                                    onChange={(e) => setPrimaryPassword(e.target.value)}
                                     onKeyPress={(e) => handleKeyPress(e, false)}
                                     className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded font-mono text-white focus:outline-none focus:border-red-400 transition-colors"
                                     placeholder="Enter password"
@@ -185,13 +185,13 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                             </div>
 
                             <button
-                                onClick={handleDummyLogin}
+                                onClick={handlePrimaryLogin}
                                 className="w-full p-3 bg-red-600 hover:bg-red-500 rounded font-mono transition-colors duration-300"
                             >
                                 LOGIN
                             </button>
 
-                            {dummyLoginAttempt && (
+                            {primaryLoginAttempt && (
                                 <div className="text-center text-red-400 text-sm font-mono animate-pulse">
                                     ❌ Authentication Failed
                                 </div>
