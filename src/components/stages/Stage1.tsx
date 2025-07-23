@@ -76,8 +76,8 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
             <div className="absolute top-0 left-0 w-full h-full bg-black flex items-center justify-center">
                 <div className="bg-blue-800/30 backdrop-blur-sm p-8 rounded-lg border border-blue-400/30 shadow-2xl">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-mono mb-2 text-blue-300">BACKUP LOGIN</h1>
-                        <p className="text-blue-400 text-sm">Secondary Authentication System</p>
+                        <h1 className="text-3xl font-mono mb-2 text-blue-300">I'VE BEEN WAITING</h1>
+                        <p className="text-blue-400 text-sm">Well done finding this, first timer</p>
                     </div>
 
                     <div className="space-y-6 w-80">
@@ -113,13 +113,10 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                             onClick={handleBackupLogin}
                             className="w-full p-3 bg-blue-600 hover:bg-blue-500 rounded font-mono transition-colors duration-300"
                         >
-                            AUTHENTICATE
+                            LOGIN
                         </button>
                     </div>
 
-                    <div className="mt-6 text-center text-xs font-mono text-blue-400">
-                        ✓ SECURE CONNECTION ESTABLISHED
-                    </div>
                 </div>
             </div>
 
@@ -139,7 +136,7 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
             >
                 {/* メイン認証インターフェース */}
                 <div className="h-full w-full flex items-center justify-center">
-                    <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-lg border border-gray-600/50 shadow-2xl relative">
+                    <div className="bg-gray-800/50 backdrop-blur-sm p-16 rounded-lg border border-gray-600/50 shadow-2xl relative max-w-2xl">
                         {/* システム設定パネル */}
                         <div 
                             className="absolute top-2 left-2 w-12 h-12 cursor-default bg-gray-800 hover:bg-gray-700 transition-colors rounded"
@@ -155,7 +152,7 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                             <p className="text-gray-400 text-sm">Authentication Required</p>
                         </div>
 
-                        <div className="space-y-6 w-80">
+                        <div className="space-y-8 w-[500px]">
                             <div>
                                 <label className="block text-sm font-mono mb-2 text-gray-300">
                                     USERNAME
@@ -165,7 +162,7 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                                     value={primaryUsername}
                                     onChange={(e) => setPrimaryUsername(e.target.value)}
                                     onKeyPress={(e) => handleKeyPress(e, false)}
-                                    className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded font-mono text-white focus:outline-none focus:border-red-400 transition-colors"
+                                    className="w-full p-4 bg-gray-700/50 border border-gray-600 rounded font-mono text-white focus:outline-none focus:border-red-400 transition-colors text-lg"
                                     placeholder="Enter username"
                                 />
                             </div>
@@ -179,14 +176,14 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                                     value={primaryPassword}
                                     onChange={(e) => setPrimaryPassword(e.target.value)}
                                     onKeyPress={(e) => handleKeyPress(e, false)}
-                                    className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded font-mono text-white focus:outline-none focus:border-red-400 transition-colors"
+                                    className="w-full p-4 bg-gray-700/50 border border-gray-600 rounded font-mono text-white focus:outline-none focus:border-red-400 transition-colors text-lg"
                                     placeholder="Enter password"
                                 />
                             </div>
 
                             <button
                                 onClick={handlePrimaryLogin}
-                                className="w-full p-3 bg-red-600 hover:bg-red-500 rounded font-mono transition-colors duration-300"
+                                className="w-full p-4 bg-red-600 hover:bg-red-500 rounded font-mono transition-colors duration-300 text-lg"
                             >
                                 LOGIN
                             </button>
@@ -198,12 +195,6 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                             )}
                         </div>
 
-                        <div className="mt-6 flex justify-center space-x-4 text-xs font-mono">
-                            <div className="flex items-center space-x-1">
-                                <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-                                <span className="text-gray-400">SYSTEM ERROR</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
