@@ -73,54 +73,52 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
             onMouseUp={handleMouseUp}
         >
             {/* 背景 - 本物のログイン画面 */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-900 to-purple-900">
-                <div className="h-full flex items-center justify-center">
-                    <div className="bg-blue-800/30 backdrop-blur-sm p-8 rounded-lg border border-blue-400/30 shadow-2xl">
-                        <div className="text-center mb-8">
-                            <h1 className="text-3xl font-mono mb-2 text-blue-300">REAL LOGIN</h1>
-                            <p className="text-blue-400 text-sm">True Authentication System</p>
+            <div className="absolute top-0 left-0 w-full h-full bg-black flex items-center justify-center">
+                <div className="bg-blue-800/30 backdrop-blur-sm p-8 rounded-lg border border-blue-400/30 shadow-2xl">
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl font-mono mb-2 text-blue-300">REAL LOGIN</h1>
+                        <p className="text-blue-400 text-sm">True Authentication System</p>
+                    </div>
+
+                    <div className="space-y-6 w-80">
+                        <div>
+                            <label className="block text-sm font-mono mb-2 text-blue-300">
+                                USERNAME
+                            </label>
+                            <input
+                                type="text"
+                                value={realUsername}
+                                onChange={(e) => setRealUsername(e.target.value)}
+                                onKeyPress={(e) => handleKeyPress(e, true)}
+                                className="w-full p-3 bg-blue-900/50 border border-blue-500 rounded font-mono text-white focus:outline-none focus:border-blue-300 transition-colors"
+                                placeholder="admin"
+                            />
                         </div>
 
-                        <div className="space-y-6 w-80">
-                            <div>
-                                <label className="block text-sm font-mono mb-2 text-blue-300">
-                                    USERNAME
-                                </label>
-                                <input
-                                    type="text"
-                                    value={realUsername}
-                                    onChange={(e) => setRealUsername(e.target.value)}
-                                    onKeyPress={(e) => handleKeyPress(e, true)}
-                                    className="w-full p-3 bg-blue-900/50 border border-blue-500 rounded font-mono text-white focus:outline-none focus:border-blue-300 transition-colors"
-                                    placeholder="admin"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-mono mb-2 text-blue-300">
-                                    PASSWORD
-                                </label>
-                                <input
-                                    type="password"
-                                    value={realPassword}
-                                    onChange={(e) => setRealPassword(e.target.value)}
-                                    onKeyPress={(e) => handleKeyPress(e, true)}
-                                    className="w-full p-3 bg-blue-900/50 border border-blue-500 rounded font-mono text-white focus:outline-none focus:border-blue-300 transition-colors"
-                                    placeholder="secret"
-                                />
-                            </div>
-
-                            <button
-                                onClick={handleRealLogin}
-                                className="w-full p-3 bg-blue-600 hover:bg-blue-500 rounded font-mono transition-colors duration-300"
-                            >
-                                AUTHENTICATE
-                            </button>
+                        <div>
+                            <label className="block text-sm font-mono mb-2 text-blue-300">
+                                PASSWORD
+                            </label>
+                            <input
+                                type="password"
+                                value={realPassword}
+                                onChange={(e) => setRealPassword(e.target.value)}
+                                onKeyPress={(e) => handleKeyPress(e, true)}
+                                className="w-full p-3 bg-blue-900/50 border border-blue-500 rounded font-mono text-white focus:outline-none focus:border-blue-300 transition-colors"
+                                placeholder="secret"
+                            />
                         </div>
 
-                        <div className="mt-6 text-center text-xs font-mono text-blue-400">
-                            ✓ SECURE CONNECTION ESTABLISHED
-                        </div>
+                        <button
+                            onClick={handleRealLogin}
+                            className="w-full p-3 bg-blue-600 hover:bg-blue-500 rounded font-mono transition-colors duration-300"
+                        >
+                            AUTHENTICATE
+                        </button>
+                    </div>
+
+                    <div className="mt-6 text-center text-xs font-mono text-blue-400">
+                        ✓ SECURE CONNECTION ESTABLISHED
                     </div>
                 </div>
             </div>
@@ -136,8 +134,7 @@ const Stage1: React.FC<StageProps> = ({ onStageComplete }) => {
                     height: '100vh',
                     top: 0,
                     left: 0,
-                    backgroundColor: '#000000',
-                    background: 'linear-gradient(135deg, #1f2937 0%, #000000 100%)'
+                    backgroundColor: '#000000'
                 }}
             >
                 {/* 中央に配置された偽ログイン画面 */}
