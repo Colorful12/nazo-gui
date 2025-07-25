@@ -19,6 +19,7 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [noteWindowPos, setNoteWindowPos] = useState({ x: 0, y: 0 });
     const [hopeWindowPos, setHopeWindowPos] = useState({ x: 0, y: 0 });
+    const [passwordWindowPos, setPasswordWindowPos] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState<string | null>(null);
     const [topWindow, setTopWindow] = useState<string | null>(null);
 
@@ -130,14 +131,15 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
         }
     };
 
-    const handleWindowDragStart = (e: React.MouseEvent, windowType: 'note' | 'hope') => {
+    const handleWindowDragStart = (e: React.MouseEvent, windowType: 'note' | 'hope' | 'password') => {
         e.preventDefault();
         setIsDragging(windowType);
         setTopWindow(windowType);
         
         const startX = e.clientX;
         const startY = e.clientY;
-        const currentPos = windowType === 'note' ? noteWindowPos : hopeWindowPos;
+        const currentPos = windowType === 'note' ? noteWindowPos : 
+                          windowType === 'hope' ? hopeWindowPos : passwordWindowPos;
 
         const handleMouseMove = (e: MouseEvent) => {
             const deltaX = e.clientX - startX;
@@ -147,8 +149,10 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
             
             if (windowType === 'note') {
                 setNoteWindowPos({ x: newX, y: newY });
-            } else {
+            } else if (windowType === 'hope') {
                 setHopeWindowPos({ x: newX, y: newY });
+            } else {
+                setPasswordWindowPos({ x: newX, y: newY });
             }
         };
 
@@ -162,7 +166,7 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
         document.addEventListener('mouseup', handleMouseUp);
     };
 
-    const handleWindowClick = (windowType: 'note' | 'hope') => {
+    const handleWindowClick = (windowType: 'note' | 'hope' | 'password') => {
         setTopWindow(windowType);
     };
 
@@ -243,11 +247,11 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                         >
                             {/* タイトルバー */}
                             <div 
-                                className="flex justify-between items-center font-mono text-sm px-2 py-1 cursor-move"
-                                style={{ backgroundColor: '#0000aa', color: 'white' }}
+                                className="flex justify-between items-center font-mono text-sm py-1 cursor-move"
+                                style={{ backgroundColor: '#0000aa', color: 'white', padding: '4px 8px' }}
                                 onMouseDown={(e) => handleWindowDragStart(e, 'note')}
                             >
-                                <span>note.txt - Notepad</span>
+                                <span>note.txt</span>
                                 <button
                                     onClick={() => setShowNote(false)}
                                     className="px-2 hover:bg-gray-400"
@@ -261,7 +265,7 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                                 </button>
                             </div>
                             {/* コンテンツエリア */}
-                            <div className="bg-white text-black p-4 font-mono text-sm" style={{ width: '350px', height: '200px', marginTop: '6px' }}>
+                            <div className="bg-white text-black font-mono text-sm" style={{ width: '350px', height: '200px', marginTop: '6px', padding: '16px' }}>
                                 <div className="whitespace-pre-line">
                                     I think my time is over...{'\n'}
                                     After 20 years, I'm tired.{'\n'}
@@ -279,7 +283,14 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                     {/* 背景オーバーレイ */}
                     <div className="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
                     <div 
-                        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+                        className="fixed"
+                        style={{
+                            top: '50%',
+                            left: '50%',
+                            transform: `translate(calc(-50% + ${passwordWindowPos.x}px), calc(-50% + ${passwordWindowPos.y}px))`,
+                            zIndex: topWindow === 'password' ? 50 : 40
+                        }}
+                        onClick={() => handleWindowClick('password')}
                     >
                         <div 
                             className="shadow-2xl"
@@ -295,10 +306,11 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                         >
                             {/* タイトルバー */}
                             <div 
-                                className="flex justify-center items-center font-sans text-sm px-4"
+                                className="flex justify-center items-center font-sans text-sm px-4 cursor-move"
                                 style={{ backgroundColor: '#f8f8f8', color: '#333', borderBottom: '1px solid #ddd', height: '30px' }}
+                                onMouseDown={(e) => handleWindowDragStart(e, 'password')}
                             >
-                                <span>パスワード</span>
+                                <span>hope.txt - パスワード</span>
                             </div>
                             {/* コンテンツエリア */}
                             <div className="font-sans text-sm text-black" style={{ paddingTop: '16px', paddingLeft: '24px', paddingRight: '24px', paddingBottom: '16px' }}>
