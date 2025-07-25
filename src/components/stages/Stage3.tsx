@@ -15,6 +15,7 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
     const [isNoteUnlocked, setIsNoteUnlocked] = useState(false);
     const [showNote, setShowNote] = useState(false);
     const [showLockedNote, setShowLockedNote] = useState(false);
+    const [showPasswordDialog, setShowPasswordDialog] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [noteWindowPos, setNoteWindowPos] = useState({ x: 0, y: 0 });
     const [hopeWindowPos, setHopeWindowPos] = useState({ x: 0, y: 0 });
@@ -117,7 +118,9 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
     const handlePasswordSubmit = () => {
         if (notePassword === correctPassword) {
             setIsNoteUnlocked(true);
+            setShowPasswordDialog(false);
             setShowLockedNote(true);
+            setTopWindow('hope');
             setTimeout(() => {
                 setIsTransitioning(true);
                 setTimeout(() => {
@@ -194,8 +197,7 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                 <div
                     className="flex flex-col items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-50 p-4 w-24 transition-colors rounded"
                     onClick={() => {
-                        setShowLockedNote(true);
-                        setTopWindow('hope');
+                        setShowPasswordDialog(true);
                     }}
                 >
                     {/* ファイルアイコン */}
@@ -271,6 +273,122 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                 </>
             )}
 
+            {/* パスワードダイアログ */}
+            {showPasswordDialog && (
+                <>
+                    {/* 背景オーバーレイ */}
+                    <div className="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+                    <div 
+                        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+                    >
+                        <div 
+                            className="shadow-2xl"
+                            style={{
+                                backgroundColor: '#c0c0c0',
+                                border: '2px solid',
+                                borderTopColor: 'white',
+                                borderLeftColor: 'white', 
+                                borderRightColor: '#808080',
+                                borderBottomColor: '#808080',
+                                width: '420px'
+                            }}
+                        >
+                            {/* タイトルバー */}
+                            <div 
+                                className="flex justify-between items-center font-sans text-sm px-2 py-1"
+                                style={{ backgroundColor: '#0000aa', color: 'white' }}
+                            >
+                                <span>パスワード</span>
+                                <button
+                                    onClick={() => {
+                                        setShowPasswordDialog(false);
+                                        setNotePassword('');
+                                    }}
+                                    className="px-2 hover:bg-gray-400 text-sm"
+                                    style={{
+                                        backgroundColor: '#c0c0c0',
+                                        color: 'black',
+                                        border: '1px solid #808080'
+                                    }}
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                            {/* コンテンツエリア */}
+                            <div className="p-4 font-sans text-sm text-black">
+                                <div className="flex items-start gap-3 mb-4">
+                                    {/* 警告アイコン */}
+                                    <div className="flex-shrink-0 mt-1">
+                                        <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center border border-yellow-600">
+                                            <span className="text-black font-bold text-lg">!</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="mb-3">
+                                            「hope.txt」は保護されています。文書を開くパスワードを入力してください。
+                                        </div>
+                                        <div className="mb-2">パスワードを入力(P):</div>
+                                        <input
+                                            type="password"
+                                            maxLength={4}
+                                            value={notePassword}
+                                            onChange={(e) => setNotePassword(e.target.value)}
+                                            className="border border-gray-400 px-2 py-1 w-32 text-center mb-4"
+                                            style={{
+                                                borderTopColor: '#808080',
+                                                borderLeftColor: '#808080',
+                                                borderRightColor: 'white',
+                                                borderBottomColor: 'white'
+                                            }}
+                                            autoFocus
+                                            onKeyPress={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    handlePasswordSubmit();
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                                {/* ボタンエリア */}
+                                <div className="flex justify-end gap-2">
+                                    <button
+                                        onClick={handlePasswordSubmit}
+                                        className="px-4 py-1 text-sm"
+                                        style={{
+                                            backgroundColor: '#c0c0c0',
+                                            border: '2px solid',
+                                            borderTopColor: 'white',
+                                            borderLeftColor: 'white',
+                                            borderRightColor: '#808080',
+                                            borderBottomColor: '#808080'
+                                        }}
+                                    >
+                                        OK
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setShowPasswordDialog(false);
+                                            setNotePassword('');
+                                        }}
+                                        className="px-4 py-1 text-sm"
+                                        style={{
+                                            backgroundColor: '#c0c0c0',
+                                            border: '2px solid',
+                                            borderTopColor: 'white',
+                                            borderLeftColor: 'white',
+                                            borderRightColor: '#808080',
+                                            borderBottomColor: '#808080'
+                                        }}
+                                    >
+                                        キャンセル
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+
             {/* hope.txt ウィンドウ */}
             {showLockedNote && (
                 <>
@@ -318,34 +436,13 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                             </div>
                             {/* コンテンツエリア */}
                             <div className="bg-white text-black p-4 font-mono text-sm" style={{ width: '350px', height: '200px', marginTop: '6px' }}>
-                                {!isNoteUnlocked ? (
-                                    <div>
-                                        <div className="mb-3">Password required (4 digits):</div>
-                                        <div className="flex gap-2">
-                                            <input
-                                                type="text"
-                                                maxLength={4}
-                                                value={notePassword}
-                                                onChange={(e) => setNotePassword(e.target.value)}
-                                                className="border border-gray-400 px-2 py-1 w-16 text-center"
-                                            />
-                                            <button
-                                                onClick={handlePasswordSubmit}
-                                                className="bg-gray-200 hover:bg-gray-300 border border-gray-400 px-3 py-1 text-xs"
-                                            >
-                                                OK
-                                            </button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="text-red-600 font-bold whitespace-pre-line">
-                                        SUPER USER{'\n'}
-                                        REMOVE{'\n'}
-                                        RECURSIVELY{'\n'}
-                                        FORCE{'\n'}
-                                        ALL
-                                    </div>
-                                )}
+                                <div className="text-red-600 font-bold whitespace-pre-line">
+                                    SUPER USER{'\n'}
+                                    REMOVE{'\n'}
+                                    RECURSIVELY{'\n'}
+                                    FORCE{'\n'}
+                                    ALL
+                                </div>
                             </div>
                         </div>
                     </div>
