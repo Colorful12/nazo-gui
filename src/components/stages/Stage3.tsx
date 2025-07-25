@@ -295,45 +295,28 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                         >
                             {/* タイトルバー */}
                             <div 
-                                className="flex justify-between items-center font-sans text-sm px-2 py-1"
-                                style={{ backgroundColor: '#0000aa', color: 'white' }}
+                                className="flex justify-center items-center font-sans text-sm px-4"
+                                style={{ backgroundColor: '#f8f8f8', color: '#333', borderBottom: '1px solid #ddd', height: '30px' }}
                             >
                                 <span>パスワード</span>
-                                <button
-                                    onClick={() => {
-                                        setShowPasswordDialog(false);
-                                        setNotePassword('');
-                                    }}
-                                    className="px-2 hover:bg-gray-400 text-sm"
-                                    style={{
-                                        backgroundColor: '#c0c0c0',
-                                        color: 'black',
-                                        border: '1px solid #808080'
-                                    }}
-                                >
-                                    ✕
-                                </button>
                             </div>
                             {/* コンテンツエリア */}
-                            <div className="p-4 font-sans text-sm text-black">
-                                <div className="flex items-start gap-3 mb-4">
-                                    {/* 警告アイコン */}
-                                    <div className="flex-shrink-0 mt-1">
-                                        <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center border border-yellow-600">
-                                            <span className="text-black font-bold text-lg">!</span>
-                                        </div>
+                            <div className="font-sans text-sm text-black" style={{ paddingTop: '16px', paddingLeft: '24px', paddingRight: '24px', paddingBottom: '16px' }}>
+                                <div className="mb-6">
+                                    <div className="mb-4 text-gray-800 whitespace-pre-line" style={{ fontSize: '15px' }}>
+                                        このファイルはパスワードで保護されています。{'\n'}ファイルを開くにはパスワードを入力してください。
                                     </div>
-                                    <div className="flex-1">
-                                        <div className="mb-3">
-                                            「hope.txt」は保護されています。文書を開くパスワードを入力してください。
-                                        </div>
-                                        <div className="mb-2">パスワードを入力(P):</div>
+                                </div>
+                                {/* パスワード入力とボタンエリア */}
+                                <div className="flex justify-between items-end">
+                                    <div>
+                                        <div className="mb-2" style={{ fontSize: '15px', marginTop: '20px' }}>パスワードを入力:</div>
                                         <input
                                             type="password"
                                             maxLength={4}
                                             value={notePassword}
                                             onChange={(e) => setNotePassword(e.target.value)}
-                                            className="border border-gray-400 px-2 py-1 w-32 text-center mb-4"
+                                            className="border border-gray-400 px-2 py-1 w-32 text-center"
                                             style={{
                                                 borderTopColor: '#808080',
                                                 borderLeftColor: '#808080',
@@ -348,40 +331,39 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                                             }}
                                         />
                                     </div>
-                                </div>
-                                {/* ボタンエリア */}
-                                <div className="flex justify-end gap-2">
-                                    <button
-                                        onClick={handlePasswordSubmit}
-                                        className="px-4 py-1 text-sm"
-                                        style={{
-                                            backgroundColor: '#c0c0c0',
-                                            border: '2px solid',
-                                            borderTopColor: 'white',
-                                            borderLeftColor: 'white',
-                                            borderRightColor: '#808080',
-                                            borderBottomColor: '#808080'
-                                        }}
-                                    >
-                                        OK
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setShowPasswordDialog(false);
-                                            setNotePassword('');
-                                        }}
-                                        className="px-4 py-1 text-sm"
-                                        style={{
-                                            backgroundColor: '#c0c0c0',
-                                            border: '2px solid',
-                                            borderTopColor: 'white',
-                                            borderLeftColor: 'white',
-                                            borderRightColor: '#808080',
-                                            borderBottomColor: '#808080'
-                                        }}
-                                    >
-                                        キャンセル
-                                    </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={handlePasswordSubmit}
+                                            className="px-4 py-1 text-sm"
+                                            style={{
+                                                backgroundColor: '#c0c0c0',
+                                                border: '2px solid',
+                                                borderTopColor: 'white',
+                                                borderLeftColor: 'white',
+                                                borderRightColor: '#808080',
+                                                borderBottomColor: '#808080'
+                                            }}
+                                        >
+                                            OK
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setShowPasswordDialog(false);
+                                                setNotePassword('');
+                                            }}
+                                            className="px-4 py-1 text-sm"
+                                            style={{
+                                                backgroundColor: '#c0c0c0',
+                                                border: '2px solid',
+                                                borderTopColor: 'white',
+                                                borderLeftColor: 'white',
+                                                borderRightColor: '#808080',
+                                                borderBottomColor: '#808080'
+                                            }}
+                                        >
+                                            キャンセル
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
