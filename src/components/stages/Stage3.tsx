@@ -16,6 +16,10 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
     const [showNote, setShowNote] = useState(false);
     const [showLockedNote, setShowLockedNote] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
+    const [noteWindowPos, setNoteWindowPos] = useState({ x: 0, y: 0 });
+    const [hopeWindowPos, setHopeWindowPos] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState<string | null>(null);
+    const [topWindow, setTopWindow] = useState<string | null>(null);
 
     const generateFibonacci = (n: number): number[] => {
         const fib = [1, 1];
@@ -123,6 +127,42 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
         }
     };
 
+    const handleWindowDragStart = (e: React.MouseEvent, windowType: 'note' | 'hope') => {
+        e.preventDefault();
+        setIsDragging(windowType);
+        setTopWindow(windowType);
+        
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const currentPos = windowType === 'note' ? noteWindowPos : hopeWindowPos;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            const newX = currentPos.x + deltaX;
+            const newY = currentPos.y + deltaY;
+            
+            if (windowType === 'note') {
+                setNoteWindowPos({ x: newX, y: newY });
+            } else {
+                setHopeWindowPos({ x: newX, y: newY });
+            }
+        };
+
+        const handleMouseUp = () => {
+            setIsDragging(null);
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    };
+
+    const handleWindowClick = (windowType: 'note' | 'hope') => {
+        setTopWindow(windowType);
+    };
+
     return (
         <div className="h-screen bg-gray-800 text-white overflow-hidden relative select-none">
             {/* デスクトップファイル */}
@@ -130,7 +170,10 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                 {/* note.txt */}
                 <div
                     className="flex flex-col items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-50 p-4 w-24 transition-colors rounded"
-                    onClick={() => setShowNote(true)}
+                    onClick={() => {
+                        setShowNote(true);
+                        setTopWindow('note');
+                    }}
                     style={{ marginBottom: '40px' }}
                 >
                     {/* ファイルアイコン */}
@@ -150,7 +193,10 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                 {/* hope.txt */}
                 <div
                     className="flex flex-col items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-50 p-4 w-24 transition-colors rounded"
-                    onClick={() => setShowLockedNote(true)}
+                    onClick={() => {
+                        setShowLockedNote(true);
+                        setTopWindow('hope');
+                    }}
                 >
                     {/* ファイルアイコン */}
                     <div className="mb-3">
@@ -172,7 +218,16 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                 <>
                     {/* 背景オーバーレイ */}
                     <div className="fixed inset-0 bg-black bg-opacity-30 z-30"></div>
-                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40">
+                    <div 
+                        className="fixed"
+                        style={{
+                            top: '50%',
+                            left: '50%',
+                            transform: `translate(calc(-50% + ${noteWindowPos.x}px), calc(-50% + ${noteWindowPos.y}px))`,
+                            zIndex: topWindow === 'note' ? 50 : 40
+                        }}
+                        onClick={() => handleWindowClick('note')}
+                    >
                         <div 
                             className="shadow-2xl"
                             style={{
@@ -186,8 +241,9 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                         >
                             {/* タイトルバー */}
                             <div 
-                                className="flex justify-between items-center font-mono text-sm px-2 py-1"
+                                className="flex justify-between items-center font-mono text-sm px-2 py-1 cursor-move"
                                 style={{ backgroundColor: '#0000aa', color: 'white' }}
+                                onMouseDown={(e) => handleWindowDragStart(e, 'note')}
                             >
                                 <span>note.txt - Notepad</span>
                                 <button
@@ -220,7 +276,16 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                 <>
                     {/* 背景オーバーレイ */}
                     <div className="fixed inset-0 bg-black bg-opacity-30 z-30"></div>
-                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40">
+                    <div 
+                        className="fixed"
+                        style={{
+                            top: '50%',
+                            left: '50%',
+                            transform: `translate(calc(-50% + ${hopeWindowPos.x}px), calc(-50% + ${hopeWindowPos.y}px))`,
+                            zIndex: topWindow === 'hope' ? 50 : 40
+                        }}
+                        onClick={() => handleWindowClick('hope')}
+                    >
                         <div 
                             className="shadow-2xl"
                             style={{
@@ -234,8 +299,9 @@ const Stage3: React.FC<StageProps> = ({ onStageComplete }) => {
                         >
                             {/* タイトルバー */}
                             <div 
-                                className="flex justify-between items-center font-mono text-sm px-2 py-1"
+                                className="flex justify-between items-center font-mono text-sm px-2 py-1 cursor-move"
                                 style={{ backgroundColor: '#0000aa', color: 'white' }}
+                                onMouseDown={(e) => handleWindowDragStart(e, 'hope')}
                             >
                                 <span>hope.txt - Notepad</span>
                                 <button
