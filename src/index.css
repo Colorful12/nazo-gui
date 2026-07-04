@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+@import 'tailwindcss';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+    --font-mono: 'Share Tech Mono', monospace;
+}
 
 /* Stage0風シンプル統一デザインシステム */
 
